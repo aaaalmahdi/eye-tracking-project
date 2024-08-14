@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بطاقات تتبع العين</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .header {
+            width: 100%;
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            font-size: 2em;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 300px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .sidebar h1 {
+            margin: 0 0 20px;
+            font-size: 1.8em;
+            color: #4CAF50;
+        }
+        .sidebar .controls {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .sidebar .control {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar .control label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .sidebar .control input,
+        .sidebar .control select {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .sidebar .control button {
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 1em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .sidebar .control button:hover {
+            background-color: #388E3C;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+        .content h2 {
+            margin: 20px 0;
+            font-size: 2.5em;
+            color: #4CAF50;
+        }
+        .instructions {
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            color: #555;
+            text-align: center;
+            max-width: 600px;
+        }
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            gap: 20px;
+        }
+        .card {
+            width: 200px;
+            height: 200px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            position: relative;
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+            background-color: #e0f7fa;
+        }
+        .card .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+        }
+        .selected {
+            background-color: #d0f0c0;
+        }
+        .pointer {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: red;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            transition: transform 0.1s ease;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .notification.show {
+            opacity: 1;
+        }
+        #fps-counter {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                padding: 10px;
+            }
+            .sidebar .controls {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            .sidebar .control {
+                flex: 1 1 48%;
+                margin-bottom: 10px;
+            }
+            .content h2 {
+                font-size: 2em;
+            }
+            .instructions {
+                font-size: 1em;
+            }
+            .card {
+                width: 150px;
+                height: 150px;
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        بطاقات تتبع العين
+    </div>
+    <div class="main">
+        <div class="sidebar">
+            <h1>خيارات</h1>
+            <div class="controls">
+                <div class="control">
+                    <label for="speed">سرعة المؤشر:</label>
+                    <input type="range" id="speed" name="speed" min="1" max="20" value="10">
+                </div>
+                <div class="control">
+                    <label for="accuracy">دقة التتبع:</label>
+                    <input type="range" id="accuracy" name="accuracy" min="1" max="20" value="10">
+                </div>
+                <div class="control">
+                    <label for="add-card-text">إضافة نص بطاقة جديدة:</label>
+                    <input type="text" id="add-card-text" placeholder="أدخل نص البطاقة">
+                    <button id="add-card-btn">إضافة بطاقة</button>
+                </div>
+                <div class="control">
+                    <label for="alignment">محاذاة البطاقات:</label>
+                    <select id="alignment">
+                        <option value="horizontal">أفقي</option>
+                        <option value="vertical">عمودي</option>
+                    </select>
+                </div>
+                <div class="control">
+                    <label for="spacing">تباعد البطاقات:</label>
+                    <input type="range" id="spacing" name="spacing" min="100" max="250" value="150">
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="card-container" id="card-container">
+                <div class="card" id="card1">
+                    نعم
+                    <button class="delete-btn" onclick="deleteCard(event, this)">X</button>
+                </div>
+                <div class="card" id="card2">
+                    لا
+                    <button class="delete-btn" onclick="deleteCard(event, this)">X</button>
+                </div>
+            </div>
+            <div class="pointer" id="pointer"></div>
+        </div>
+    </div>
+    <div class="notification" id="notification">تم اختيار البطاقة</div>
+    <div id="fps-counter">FPS: 0</div>
+    <audio id="select-sound" src="select-sound.mp3" preload="auto"></audio>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/facemesh"></script>
+    <script src="eye-tracking.js"></script>
+</body>
+</html>
